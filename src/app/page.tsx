@@ -88,9 +88,91 @@ export default function LockScreen() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center"
-        style={{ background: "linear-gradient(160deg, #1e2e0a 0%, #3d4f1e 50%, #4f6228 100%)" }}>
-        <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-8"
+        style={{ background: "linear-gradient(160deg, #1e2e0a 0%, #2d3a14 35%, #4f6228 70%, #3d4f1e 100%)" }}
+      >
+        {/* Decorative circles */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-white/5" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-black/20" />
+        </div>
+
+        {/* 3D spinning logo */}
+        <div className="relative flex flex-col items-center gap-6">
+          <div
+            className="relative"
+            style={{
+              width: 120,
+              height: 120,
+              animation: "logo-spin-3d 2.4s ease-in-out infinite",
+            }}
+          >
+            {/* Glow ring behind logo */}
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: "radial-gradient(circle, rgba(200,160,89,0.35) 0%, transparent 70%)",
+                transform: "scale(1.4)",
+              }}
+            />
+            {/* Logo card */}
+            <div
+              className="w-full h-full rounded-3xl overflow-hidden relative"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)",
+              }}
+            >
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                fill
+                className="object-contain p-4"
+                sizes="120px"
+                priority
+              />
+              {/* Shine sweep */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%)",
+                  animation: "logo-shine 2.4s ease-in-out infinite",
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  width: "60%",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Brand text with float */}
+          <div
+            className="flex flex-col items-center gap-1"
+            style={{ animation: "logo-float 3s ease-in-out infinite" }}
+          >
+            <p className="text-white/50 text-[11px] uppercase tracking-[0.25em] font-semibold">
+              Roopa&apos;s Craft Jewellery
+            </p>
+            <p className="text-white text-2xl font-bold tracking-wide">Finance</p>
+          </div>
+
+          {/* Loading dots */}
+          <div className="flex gap-2 mt-2">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-white/50"
+                style={{
+                  animation: `logo-float 1.2s ease-in-out ${i * 0.2}s infinite`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
