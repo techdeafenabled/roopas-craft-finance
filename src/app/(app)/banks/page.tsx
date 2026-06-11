@@ -4,8 +4,18 @@ import { db } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 import { formatINR, generateId } from "@/lib/format";
 import toast from "react-hot-toast";
-import { Landmark, Plus, Trash2 } from "lucide-react";
+import { Landmark, Plus, Trash2, Eye, EyeOff, Banknote, Wallet } from "lucide-react";
 import type { Bank } from "@/lib/types";
+
+const HIDE_KEY = "rcj_hide_amounts";
+
+const BANK_GRADIENTS = [
+  "linear-gradient(135deg, #3d4f1e, #4f6228)",
+  "linear-gradient(135deg, #7c5c1e, #c8a059)",
+  "linear-gradient(135deg, #1e3a4f, #2d6a8a)",
+  "linear-gradient(135deg, #4f1e3d, #8a2d6a)",
+  "linear-gradient(135deg, #1e4f3a, #2d8a6a)",
+];
 
 export default function BanksPage() {
   const [banks, setBanks] = useState<(Bank & { balance: number })[]>([]);
@@ -14,6 +24,17 @@ export default function BanksPage() {
   const [newType, setNewType] = useState<"bank" | "cash">("bank");
   const [newBalance, setNewBalance] = useState("");
   const [saving, setSaving] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    setHidden(localStorage.getItem(HIDE_KEY) === "1");
+  }, []);
+
+  function toggleHide() {
+    const next = !hidden;
+    setHidden(next);
+    localStorage.setItem(HIDE_KEY, next ? "1" : "0");
+  }
 
   async function load() {
     const [allBanks, allTx, allTxBanks] = await Promise.all([
@@ -70,8 +91,12 @@ export default function BanksPage() {
     load();
   }
 
+  const totalBalance = banks.reduce((s, b) => s + b.balance, 0);
+
   return (
-    <div className="px-4 pt-6 flex flex-col gap-5">
+    <div className="px-4 pt-6 pb-6 flex flex-col gap-5">
+
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--forest-green)" }}>
@@ -79,50 +104,79 @@ export default function BanksPage() {
           </div>
           <h1 className="text-xl font-bold">Banks & Accounts</h1>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className="w-9 h-9 rounded-xl flex items-center justify-center border border-[var(--border)] bg-white">
-          <Plus size={18} style={{ color: "var(--forest-green)" }} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleHide}
+            className="w-9 h-9 rounded-xl bg-white border border-[var(--border)] flex items-center justify-center"
+          >
+            {hidden
+              ? <EyeOff size={16} className="text-[var(--text-secondary)]" />
+              : <Eye size={16} className="text-[var(--text-secondary)]" />
+            }
+          </button>
+          <button
+            onClick={() => setShowAdd(!showAdd)}
+            className="w-9 h-9 rounded-xl flex items-center justify-center border border-[var(--border)] bg-white"
+          >
+            <Plus size={18} style={{ color: "var(--forest-green)" }} />
+          </button>
+        </div>
       </div>
 
+      {/* Total balance summary */}
+      <div
+        className="rounded-2xl p-5 text-white relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #3d4f1e, var(--forest-green) 60%, var(--forest-green-light))" }}
+      >
+        <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/5" />
+        <div className="absolute -bottom-6 -right-2 w-20 h-20 rounded-full bg-white/5" />
+        <p className="text-[10px] uppercase tracking-widest opacity-70 font-semibold">Total Balance</p>
+        <p className="text-3xl font-bold mt-1">
+          {hidden ? "••••••" : formatINR(totalBalance)}
+        </p>
+        <p className="text-xs opacity-60 mt-1">{banks.length} account{banks.length !== 1 ? "s" : ""}</p>
+      </div>
+
+      {/* Add form */}
       {showAdd && (
         <div className="card flex flex-col gap-3">
           <p className="text-sm font-bold">New Account</p>
           <input
             type="text"
-            placeholder="Account name"
+            placeholder="Account name (e.g. SBI, HDFC, Cash)"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            className="bg-[var(--off-white)] rounded-lg px-3 py-2 text-sm outline-none"
+            className="bg-[var(--off-white)] rounded-xl px-3 py-2.5 text-sm outline-none"
           />
           <div className="flex gap-2">
             {(["bank", "cash"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setNewType(t)}
-                className={`flex-1 py-2 rounded-lg text-xs font-semibold border capitalize ${
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold border capitalize transition-colors ${
                   newType === t ? "text-white border-transparent" : "bg-white text-[var(--text-secondary)] border-[var(--border)]"
                 }`}
                 style={newType === t ? { background: "var(--forest-green)" } : {}}
               >
-                {t}
+                {t === "bank" ? "🏦 Bank" : "💵 Cash"}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-[var(--text-secondary)]">₹</span>
+          <div className="flex items-center gap-2 bg-[var(--off-white)] rounded-xl px-3 py-2.5">
+            <span className="text-sm font-bold text-[var(--text-secondary)]">₹</span>
             <input
               type="number"
-              placeholder="Opening balance"
+              placeholder="Opening balance (0)"
               value={newBalance}
               onChange={(e) => setNewBalance(e.target.value)}
               inputMode="decimal"
-              className="flex-1 bg-[var(--off-white)] rounded-lg px-3 py-2 text-sm outline-none"
+              className="flex-1 bg-transparent text-sm outline-none"
             />
           </div>
           <button
             onClick={handleAdd}
             disabled={saving}
-            className="py-2.5 rounded-xl text-sm font-semibold text-white disabled:opacity-60"
+            className="py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-60"
             style={{ background: "var(--forest-green)" }}
           >
             {saving ? "Adding..." : "Add Account"}
@@ -130,27 +184,79 @@ export default function BanksPage() {
         </div>
       )}
 
+      {/* Bank cards */}
       <div className="flex flex-col gap-3">
-        {banks.map((bank) => (
-          <div key={bank.id} className="card flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--off-white)]">
-              <Landmark size={18} style={{ color: "var(--forest-green)" }} />
+        {banks.map((bank, i) => (
+          <div
+            key={bank.id}
+            className="rounded-2xl p-5 text-white relative overflow-hidden"
+            style={{ background: BANK_GRADIENTS[i % BANK_GRADIENTS.length] }}
+          >
+            {/* decorative circles */}
+            <div className="absolute -top-5 -right-5 w-24 h-24 rounded-full bg-white/10" />
+            <div className="absolute -bottom-6 right-10 w-16 h-16 rounded-full bg-white/5" />
+
+            <div className="relative flex items-start justify-between">
+              {/* Icon + type */}
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                  {bank.type === "cash"
+                    ? <Wallet size={18} color="white" />
+                    : <Banknote size={18} color="white" />
+                  }
+                </div>
+                <div>
+                  <p className="text-xs opacity-70 capitalize font-medium">{bank.type} account</p>
+                  <p className="text-base font-bold leading-tight">{bank.name}</p>
+                </div>
+              </div>
+
+              {/* Delete */}
+              <button
+                onClick={() => handleDelete(bank.id)}
+                className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center active:bg-white/30"
+              >
+                <Trash2 size={14} color="white" />
+              </button>
             </div>
-            <div className="flex-1">
-              <p className="font-semibold text-sm">{bank.name}</p>
-              <p className="text-xs text-[var(--text-secondary)] capitalize">{bank.type}</p>
-            </div>
-            <div className="text-right">
-              <p className={`font-bold text-sm ${bank.balance >= 0 ? "text-sale" : "text-expense"}`}>
-                {formatINR(bank.balance)}
+
+            {/* Balance */}
+            <div className="relative mt-5">
+              <p className="text-[10px] uppercase tracking-widest opacity-60 font-semibold">
+                Current Balance
+              </p>
+              <p className={`text-2xl font-bold mt-0.5 ${bank.balance < 0 ? "text-red-300" : "text-white"}`}>
+                {hidden ? "•••••••" : formatINR(bank.balance)}
+              </p>
+              <p className="text-[10px] opacity-50 mt-1">
+                Opening: {hidden ? "•••••" : formatINR(bank.opening_balance)}
               </p>
             </div>
-            <button onClick={() => handleDelete(bank.id)} className="text-[var(--text-secondary)] p-1">
-              <Trash2 size={16} />
-            </button>
+
+            {/* Bottom row */}
+            <div className="relative mt-4 pt-3 border-t border-white/15 flex justify-between items-center">
+              <div>
+                <p className="text-[10px] opacity-60">Net movement</p>
+                <p className={`text-sm font-bold ${(bank.balance - bank.opening_balance) >= 0 ? "text-green-300" : "text-red-300"}`}>
+                  {hidden ? "•••••" : (bank.balance - bank.opening_balance >= 0 ? "+" : "") + formatINR(bank.balance - bank.opening_balance)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] opacity-60">Status</p>
+                <p className={`text-xs font-bold ${bank.balance >= 0 ? "text-green-300" : "text-red-300"}`}>
+                  {bank.balance >= 0 ? "● Active" : "● Overdrawn"}
+                </p>
+              </div>
+            </div>
           </div>
         ))}
       </div>
+
+      {banks.length === 0 && (
+        <div className="text-center py-12 text-[var(--text-secondary)] text-sm">
+          No accounts yet. Tap + to add one.
+        </div>
+      )}
     </div>
   );
 }

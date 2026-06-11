@@ -1,10 +1,32 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { isSetupComplete, verifyPin, getLockoutStatus } from "@/lib/auth";
 import PinKeypad from "@/components/PinKeypad";
-import { Shield } from "lucide-react";
+import Image from "next/image";
+import { Lock } from "lucide-react";
+
+function LiveClock() {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  if (!now) return null;
+  const time = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true });
+  const date = now.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+  return (
+    <div className="flex flex-col items-center select-none">
+      <p className="text-6xl font-thin text-white tracking-tight leading-none"
+        style={{ fontVariantNumeric: "tabular-nums" }}>
+        {time}
+      </p>
+      <p className="text-sm text-white/60 mt-2 font-medium">{date}</p>
+    </div>
+  );
+}
 
 export default function LockScreen() {
   const router = useRouter();
@@ -24,7 +46,6 @@ export default function LockScreen() {
       if (!done) router.replace("/setup");
       else setLoading(false);
     });
-
     const { locked, remainingMs } = getLockoutStatus();
     if (locked) {
       setLocked(true);
@@ -32,7 +53,6 @@ export default function LockScreen() {
     }
   }, [isAuthenticated, router]);
 
-  // Countdown lockout timer
   useEffect(() => {
     if (!locked) return;
     const interval = setInterval(() => {
@@ -47,7 +67,7 @@ export default function LockScreen() {
     return () => clearInterval(interval);
   }, [locked]);
 
-  async function handlePin(pin: string) {
+  const handlePin = useCallback(async (pin: string) => {
     setError("");
     const result = await verifyPin(pin);
     if (result.success) {
@@ -57,62 +77,103 @@ export default function LockScreen() {
       setLocked(true);
       const { remainingMs } = getLockoutStatus();
       setLockRemaining(Math.ceil(remainingMs / 60000));
-      setError("Too many wrong attempts. Account locked.");
+      setError("Too many wrong attempts.");
     } else {
       setShake(true);
       setTimeout(() => setShake(false), 600);
       const left = result.attemptsLeft ?? 0;
-      setError(`Wrong PIN. ${left} attempt${left === 1 ? "" : "s"} left.`);
+      setError(`Wrong PIN · ${left} attempt${left === 1 ? "" : "s"} left`);
     }
-  }
+  }, [login, router]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-page)]">
-        <div className="w-8 h-8 border-3 border-[var(--forest-green)] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center"
+        style={{ background: "linear-gradient(160deg, #1e2e0a 0%, #3d4f1e 50%, #4f6228 100%)" }}>
+        <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-page)] px-6 py-12">
-      <div className="flex flex-col items-center gap-8 w-full max-w-sm">
-        {/* Logo area */}
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{ background: "var(--forest-green)" }}
-          >
-            <Shield size={32} color="white" />
+    <div
+      className="min-h-screen flex flex-col items-center"
+      style={{
+        background: "linear-gradient(160deg, #1e2e0a 0%, #2d3a14 35%, #4f6228 70%, #3d4f1e 100%)",
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+      }}
+    >
+      {/* Decorative background circles */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
+        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-white/5" />
+        <div className="absolute top-1/3 -left-24 w-64 h-64 rounded-full bg-white/[0.03]" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-black/20" />
+        <div className="absolute bottom-1/4 -left-12 w-40 h-40 rounded-full bg-white/[0.04]" />
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center w-full max-w-sm px-8"
+        style={{ minHeight: "100svh", justifyContent: "space-between", paddingTop: 48, paddingBottom: 48 }}>
+
+        {/* Top: Logo + brand pill */}
+        <div className="flex flex-col items-center gap-6">
+          {/* Brand pill */}
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full"
+            style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.18)" }}>
+            <div className="w-6 h-6 relative rounded-full overflow-hidden bg-white/20 flex items-center justify-center">
+              <Image src="/logo.png" alt="logo" fill className="object-cover" sizes="24px"
+                onError={() => {}} />
+            </div>
+            <span className="text-white/90 text-xs font-semibold tracking-wider uppercase">
+              Roopa&apos;s Craft Jewellery
+            </span>
           </div>
-          <div className="text-center">
-            <p className="text-xs uppercase tracking-widest text-[var(--text-secondary)] font-semibold">
-              Roopa&apos;s Craft
-            </p>
-            <h1 className="text-2xl font-bold text-[var(--text-primary)]">
-              Finance
-            </h1>
-          </div>
+
+          {/* Live clock */}
+          <LiveClock />
         </div>
 
-        {locked ? (
-          <div className="flex flex-col items-center gap-3 text-center">
-            <p className="text-[var(--danger)] font-semibold">Account Locked</p>
-            <p className="text-sm text-[var(--text-secondary)]">
-              Too many wrong PIN attempts.
-              <br />
-              Try again in ~{lockRemaining} minute{lockRemaining === 1 ? "" : "s"}.
-            </p>
-          </div>
-        ) : (
-          <>
-            <p className="text-sm text-[var(--text-secondary)]">Enter your PIN</p>
-            <PinKeypad onComplete={handlePin} shake={shake} />
-            {error && (
-              <p className="text-sm text-[var(--danger)] text-center">{error}</p>
-            )}
-          </>
-        )}
+        {/* Middle: PIN entry or lockout */}
+        <div className="flex flex-col items-center gap-8 w-full">
+          {locked ? (
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(220,38,38,0.2)", border: "2px solid rgba(220,38,38,0.5)" }}>
+                <Lock size={28} color="#fca5a5" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-lg">Account Locked</p>
+                <p className="text-white/50 text-sm mt-1 leading-relaxed">
+                  Too many wrong attempts.<br />
+                  Try again in ~{lockRemaining} min{lockRemaining === 1 ? "" : "s"}.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-8 w-full">
+              <div className="flex flex-col items-center gap-1">
+                <p className="text-white/70 text-sm font-medium tracking-wide">Enter PIN</p>
+                {error && (
+                  <p className="text-red-300 text-xs font-medium">{error}</p>
+                )}
+              </div>
+              <PinKeypad
+                onComplete={handlePin}
+                shake={shake}
+                dark={true}
+                disabled={locked}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Bottom: App branding */}
+        <div className="flex flex-col items-center gap-1">
+          <p className="text-white/25 text-[10px] uppercase tracking-widest font-medium">
+            Finance Tracker
+          </p>
+          <p className="text-white/15 text-[10px]">Secured with PIN</p>
+        </div>
       </div>
     </div>
   );
