@@ -51,8 +51,53 @@ function clearAttempts() {
   sessionStorage.removeItem(LOCKOUT_KEY);
 }
 
+async function syncFromCloud(): Promise<boolean> {
+  try {
+    const { data } = await supabase
+      .from("app_settings")
+      .select("*")
+      .limit(1)
+      .single();
+    if (!data) return false;
+
+    await db.app_settings.put(data);
+
+    const localBankCount = await db.banks.count();
+    if (localBankCount === 0) {
+      const { data: banks } = await supabase.from("banks").select("*");
+      if (banks?.length) await db.banks.bulkPut(banks);
+
+      const { data: txns } = await supabase.from("transactions").select("*");
+      if (txns?.length) await db.transactions.bulkPut(txns);
+
+      const { data: txBanks } = await supabase.from("transaction_banks").select("*");
+      if (txBanks?.length) await db.transaction_banks.bulkPut(txBanks);
+
+      const { data: debtors } = await supabase.from("debtors").select("*");
+      if (debtors?.length) await db.debtors.bulkPut(debtors);
+
+      const { data: debtorEntries } = await supabase.from("debtor_entries").select("*");
+      if (debtorEntries?.length) await db.debtor_entries.bulkPut(debtorEntries);
+
+      const { data: creditors } = await supabase.from("creditors").select("*");
+      if (creditors?.length) await db.creditors.bulkPut(creditors);
+
+      const { data: creditorEntries } = await supabase.from("creditor_entries").select("*");
+      if (creditorEntries?.length) await db.creditor_entries.bulkPut(creditorEntries);
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function isSetupComplete(): Promise<boolean> {
-  const settings = await db.app_settings.toCollection().first();
+  let settings = await db.app_settings.toCollection().first();
+  if (!settings) {
+    const synced = await syncFromCloud();
+    if (synced) settings = await db.app_settings.toCollection().first();
+  }
   return settings?.setup_complete ?? false;
 }
 
@@ -95,7 +140,11 @@ export async function verifyPin(
   const { locked } = getLockoutStatus();
   if (locked) return { success: false, locked: true };
 
-  const settings = await db.app_settings.toCollection().first();
+  let settings = await db.app_settings.toCollection().first();
+  if (!settings) {
+    await syncFromCloud();
+    settings = await db.app_settings.toCollection().first();
+  }
   if (!settings) return { success: false };
 
   const match = await bcrypt.compare(pin, settings.pin_hash);
