@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Optimize for PWA
+  devIndicators: false,
   compress: true,
   poweredByHeader: false,
 };

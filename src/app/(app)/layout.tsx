@@ -16,7 +16,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-page)]">
-      <main className="flex-1 pb-20 max-w-lg mx-auto w-full">{children}</main>
+      <main className="flex-1 pb-20 max-w-3xl mx-auto w-full">{children}</main>
       <BottomNav />
     </div>
   );
