@@ -108,6 +108,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [refreshSyncCount]);
 
+  // Auto daily backup
+  useEffect(() => {
+    if (!isAuthenticated || !navigator.onLine) return;
+    import("@/lib/backup").then(async ({ shouldAutoBackup, saveBackupToCloud }) => {
+      if (shouldAutoBackup()) {
+        await saveBackupToCloud("auto");
+      }
+    });
+  }, [isAuthenticated]);
+
   return (
     <AuthContext.Provider
       value={{ isAuthenticated, isOnline, login, logout, pendingSyncCount, refreshSyncCount }}
