@@ -90,7 +90,7 @@ export default function LockScreen() {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center gap-8"
-        style={{ background: "linear-gradient(160deg, #1e2e0a 0%, #2d3a14 35%, #4f6228 70%, #3d4f1e 100%)" }}
+        style={{ background: "linear-gradient(160deg, #4A6B50 0%, #5A7D60 35%, #6B8F71 70%, #89A88E 100%)" }}
       >
         {/* Decorative circles */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -181,7 +181,7 @@ export default function LockScreen() {
     <div
       className="min-h-screen flex flex-col items-center"
       style={{
-        background: "linear-gradient(160deg, #1e2e0a 0%, #2d3a14 35%, #4f6228 70%, #3d4f1e 100%)",
+        background: "linear-gradient(160deg, #4A6B50 0%, #5A7D60 35%, #6B8F71 70%, #89A88E 100%)",
         paddingTop: "env(safe-area-inset-top, 0px)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}

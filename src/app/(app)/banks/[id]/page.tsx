@@ -141,7 +141,7 @@ export default function BankPassbookPage() {
       {/* Balance */}
       <div
         className="rounded-2xl p-4 text-white"
-        style={{ background: "linear-gradient(135deg, #3d4f1e, #4f6228)" }}
+        style={{ background: "linear-gradient(135deg, #5A7D60, #6B8F71)" }}
       >
         <p className="text-[10px] uppercase tracking-wider opacity-70">Current Balance</p>
         <p className="text-2xl font-bold mt-1">{formatINR(currentBalance)}</p>

@@ -206,7 +206,7 @@ export default function DashboardPage() {
       {/* ── TOTAL BALANCE CARD ── */}
       <div
         className="rounded-2xl p-5 text-white relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #3d4f1e, var(--forest-green) 60%, var(--forest-green-light))" }}
+        style={{ background: "linear-gradient(135deg, #5A7D60, var(--forest-green) 60%, var(--forest-green-light))" }}
       >
         {/* decorative circle */}
         <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/5" />

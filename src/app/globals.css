@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --forest-green: #4f6228;
-  --forest-green-light: #6b8a3a;
-  --muted-gold: #c8a059;
-  --muted-gold-light: #d4b47a;
-  --off-white: #f1f1f3;
+  --forest-green: #6B8F71;
+  --forest-green-light: #89A88E;
+  --muted-gold: #C9A96E;
+  --muted-gold-light: #D4BC8E;
+  --off-white: #F2F1ED;
   --classic-black: #000000;
-  --text-primary: #1a1a1a;
-  --text-secondary: #5a5a5a;
-  --border: #e2e2e4;
+  --text-primary: #2D3436;
+  --text-secondary: #636E72;
+  --border: #E5E3DE;
   --bg-card: #ffffff;
-  --bg-page: #f7f7f8;
-  --success: #16a34a;
-  --danger: #dc2626;
-  --warning: #d97706;
+  --bg-page: #F8F8F5;
+  --success: #4CAF50;
+  --danger: #E74C3C;
+  --warning: #E67E22;
+  --sidebar-bg: #FAFAF7;
 }
 
 @theme inline {
@@ -41,12 +42,12 @@ body {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid var(--forest-green);
+  border: 2px solid #6B8F71;
   transition: background-color 0.15s ease;
 }
 
 .pin-dot.filled {
-  background-color: var(--forest-green);
+  background-color: #6B8F71;
 }
 
 .card {
@@ -61,11 +62,11 @@ body {
 .text-purchase { color: var(--warning); }
 
 @keyframes logo-spin-3d {
-  0%   { transform: perspective(500px) rotateY(0deg) scale(1); filter: drop-shadow(0 0 12px rgba(79,98,40,0.6)); }
-  25%  { transform: perspective(500px) rotateY(90deg) scale(0.85); filter: drop-shadow(0 0 4px rgba(79,98,40,0.2)); }
-  50%  { transform: perspective(500px) rotateY(180deg) scale(1); filter: drop-shadow(0 0 20px rgba(200,160,89,0.7)); }
-  75%  { transform: perspective(500px) rotateY(270deg) scale(0.85); filter: drop-shadow(0 0 4px rgba(79,98,40,0.2)); }
-  100% { transform: perspective(500px) rotateY(360deg) scale(1); filter: drop-shadow(0 0 12px rgba(79,98,40,0.6)); }
+  0%   { transform: perspective(500px) rotateY(0deg) scale(1); filter: drop-shadow(0 0 12px rgba(107,143,113,0.6)); }
+  25%  { transform: perspective(500px) rotateY(90deg) scale(0.85); filter: drop-shadow(0 0 4px rgba(107,143,113,0.2)); }
+  50%  { transform: perspective(500px) rotateY(180deg) scale(1); filter: drop-shadow(0 0 20px rgba(201,169,110,0.7)); }
+  75%  { transform: perspective(500px) rotateY(270deg) scale(0.85); filter: drop-shadow(0 0 4px rgba(107,143,113,0.2)); }
+  100% { transform: perspective(500px) rotateY(360deg) scale(1); filter: drop-shadow(0 0 12px rgba(107,143,113,0.6)); }
 }
 
 @keyframes logo-shine {

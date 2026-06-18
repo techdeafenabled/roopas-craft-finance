@@ -29,7 +29,7 @@ export default function TopNav({ onToggleSidebar }: TopNavProps) {
     <header
       className="sticky top-0 z-40 border-b"
       style={{
-        background: "linear-gradient(135deg, #3d4f1e, #4f6228)",
+        background: "linear-gradient(135deg, #5A7D60, #6B8F71)",
         borderColor: "rgba(255,255,255,0.1)",
       }}
     >
