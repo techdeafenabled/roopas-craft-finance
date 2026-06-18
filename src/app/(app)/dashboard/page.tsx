@@ -33,6 +33,7 @@ interface DashboardData {
   recentTransactions: TransactionWithBanks[];
   totalDebtors: number;
   totalCreditors: number;
+  totalInvestments: number;
   duesSoon: { debtor: Debtor; balance: number; oldestDate: string }[];
 }
 
@@ -73,7 +74,7 @@ export default function DashboardPage() {
   }
 
   const load = useCallback(async () => {
-    const [banks, txAll, txBanksAll, debtorEntries, creditorEntries, debtors] =
+    const [banks, txAll, txBanksAll, debtorEntries, creditorEntries, debtors, investmentEntries] =
       await Promise.all([
         db.banks.toArray(),
         db.transactions.toArray(),
@@ -81,16 +82,21 @@ export default function DashboardPage() {
         db.debtor_entries.toArray(),
         db.creditor_entries.toArray(),
         db.debtors.toArray(),
+        db.investment_entries.toArray(),
       ]);
 
-    // Bank balances
+    // Bank balances (including investment impact)
     const bankBalances = banks.map((bank) => {
       const relevant = txBanksAll.filter((tb) => tb.bank_id === bank.id);
-      const balance = relevant.reduce((sum, tb) => {
+      let balance = relevant.reduce((sum, tb) => {
         const tx = txAll.find((t) => t.id === tb.transaction_id);
         if (!tx) return sum;
         return sum + (tx.type === "sale" ? tb.amount : -tb.amount);
       }, bank.opening_balance);
+      const investAdjust = investmentEntries
+        .filter((ie) => ie.bank_id === bank.id)
+        .reduce((sum, ie) => sum + (ie.type === "withdraw" ? ie.amount : -ie.amount), 0);
+      balance += investAdjust;
       return { ...bank, balance };
     });
 
@@ -147,6 +153,10 @@ export default function DashboardPage() {
       .sort((a, b) => a.oldestDate.localeCompare(b.oldestDate))
       .slice(0, 3);
 
+    const totalInvestments = investmentEntries.reduce(
+      (s, e) => s + (e.type === "invest" ? e.amount : -e.amount), 0
+    );
+
     setData({
       banks: bankBalances,
       todaySales,
@@ -156,6 +166,7 @@ export default function DashboardPage() {
       recentTransactions: recent,
       totalDebtors,
       totalCreditors,
+      totalInvestments,
       duesSoon,
     });
     setLoading(false);
@@ -208,6 +219,11 @@ export default function DashboardPage() {
             <p className="text-[2rem] font-bold mt-0.5 leading-tight">
               {hidden ? "••••••" : formatINR(totalBalance)}
             </p>
+            {data!.totalInvestments > 0 && (
+              <p className="text-[10px] opacity-60 mt-1">
+                + {hidden ? "••••" : formatINR(data!.totalInvestments)} invested = {hidden ? "••••••" : formatINR(totalBalance + data!.totalInvestments)} total worth
+              </p>
+            )}
             <p className="text-xs opacity-60 mt-0.5">{formatDate(todayStr)}</p>
           </div>
           <button

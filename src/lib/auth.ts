@@ -84,6 +84,24 @@ async function syncFromCloud(): Promise<boolean> {
 
       const { data: creditorEntries } = await supabase.from("creditor_entries").select("*");
       if (creditorEntries?.length) await db.creditor_entries.bulkPut(creditorEntries);
+
+      const { data: stalls } = await supabase.from("stalls").select("*");
+      if (stalls?.length) await db.stalls.bulkPut(stalls);
+
+      const { data: customers } = await supabase.from("customers").select("*");
+      if (customers?.length) await db.customers.bulkPut(customers);
+
+      const { data: investments } = await supabase.from("investments").select("*");
+      if (investments?.length) await db.investments.bulkPut(investments);
+
+      const { data: investmentEntries } = await supabase.from("investment_entries").select("*");
+      if (investmentEntries?.length) await db.investment_entries.bulkPut(investmentEntries);
+
+      const { data: installmentPlans } = await supabase.from("creditor_installment_plans").select("*");
+      if (installmentPlans?.length) await db.creditor_installment_plans.bulkPut(installmentPlans);
+
+      const { data: budgetTargets } = await supabase.from("budget_targets").select("*");
+      if (budgetTargets?.length) await db.budget_targets.bulkPut(budgetTargets);
     }
 
     return true;

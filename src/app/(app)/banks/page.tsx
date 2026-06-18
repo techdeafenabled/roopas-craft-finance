@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 import { formatINR, generateId } from "@/lib/format";
 import toast from "react-hot-toast";
-import { Landmark, Plus, Trash2, Eye, EyeOff, Banknote, Wallet } from "lucide-react";
+import { Landmark, Plus, Trash2, Eye, EyeOff, Banknote, Wallet, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import type { Bank } from "@/lib/types";
 
 const HIDE_KEY = "rcj_hide_amounts";
@@ -37,18 +38,23 @@ export default function BanksPage() {
   }
 
   async function load() {
-    const [allBanks, allTx, allTxBanks] = await Promise.all([
+    const [allBanks, allTx, allTxBanks, allInvestEntries] = await Promise.all([
       db.banks.toArray(),
       db.transactions.toArray(),
       db.transaction_banks.toArray(),
+      db.investment_entries.toArray(),
     ]);
     const withBalance = allBanks.map((bank) => {
       const relevant = allTxBanks.filter((tb) => tb.bank_id === bank.id);
-      const balance = relevant.reduce((sum, tb) => {
+      let balance = relevant.reduce((sum, tb) => {
         const tx = allTx.find((t) => t.id === tb.transaction_id);
         if (!tx) return sum;
         return sum + (tx.type === "sale" ? tb.amount : -tb.amount);
       }, bank.opening_balance);
+      const investAdjust = allInvestEntries
+        .filter((ie) => ie.bank_id === bank.id)
+        .reduce((sum, ie) => sum + (ie.type === "withdraw" ? ie.amount : -ie.amount), 0);
+      balance += investAdjust;
       return { ...bank, balance };
     });
     setBanks(withBalance);
@@ -241,12 +247,12 @@ export default function BanksPage() {
                   {hidden ? "•••••" : (bank.balance - bank.opening_balance >= 0 ? "+" : "") + formatINR(bank.balance - bank.opening_balance)}
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-[10px] opacity-60">Status</p>
-                <p className={`text-xs font-bold ${bank.balance >= 0 ? "text-green-300" : "text-red-300"}`}>
-                  {bank.balance >= 0 ? "● Active" : "● Overdrawn"}
-                </p>
-              </div>
+              <Link
+                href={`/banks/${bank.id}`}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/15 text-xs font-semibold"
+              >
+                Passbook <ChevronRight size={12} />
+              </Link>
             </div>
           </div>
         ))}

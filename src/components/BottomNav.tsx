@@ -3,17 +3,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  Store,
   TrendingUp,
-  ShoppingBag,
-  Receipt,
+  List,
   MoreHorizontal,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
-  { href: "/sales", icon: TrendingUp, label: "Sales" },
-  { href: "/purchases", icon: ShoppingBag, label: "Purchase" },
-  { href: "/expenses", icon: Receipt, label: "Expense" },
+  { href: "/stalls", icon: Store, label: "Stalls" },
+  { href: "/sales", icon: TrendingUp, label: "Sale" },
+  { href: "/transactions", icon: List, label: "History" },
   { href: "/more", icon: MoreHorizontal, label: "More" },
 ];
 

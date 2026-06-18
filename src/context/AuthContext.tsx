@@ -49,12 +49,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshSyncCount = useCallback(async () => {
     try {
       const { db } = await import("@/lib/db");
-      const [txCount, debtorCount, creditorCount] = await Promise.all([
+      const [txCount, debtorCount, creditorCount, stallCount, investCount] = await Promise.all([
         db.transactions.where("synced").equals(0).count(),
         db.debtor_entries.where("synced").equals(0).count(),
         db.creditor_entries.where("synced").equals(0).count(),
+        db.stalls.where("synced").equals(0).count(),
+        db.investment_entries.where("synced").equals(0).count(),
       ]);
-      setPendingSyncCount(txCount + debtorCount + creditorCount);
+      setPendingSyncCount(txCount + debtorCount + creditorCount + stallCount + investCount);
     } catch {
       // ignore
     }

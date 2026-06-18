@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 import { formatINR, formatDate, generateId, today } from "@/lib/format";
 import toast from "react-hot-toast";
-import { UserCheck, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { UserCheck, Plus, ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import type { Creditor, CreditorEntry } from "@/lib/types";
 
 interface CreditorWithBalance extends Creditor {
@@ -68,6 +69,7 @@ export default function CreditorsPage() {
       creditor_id: creditorId,
       type: entryType,
       amount: amt,
+      bank_id: null,
       date: entryDate,
       note: entryNote.trim() || null,
       synced: false,
@@ -144,6 +146,11 @@ export default function CreditorsPage() {
                     <span className="text-[var(--text-secondary)]">{formatDate(e.date)}</span>
                   </div>
                 ))}
+
+                <Link href={`/creditors/${c.id}`} className="flex items-center justify-between py-1.5 px-2 rounded-lg bg-[var(--off-white)] mt-1">
+                  <span className="text-xs font-semibold" style={{ color: "var(--forest-green)" }}>View full details & installments</span>
+                  <ChevronRight size={14} style={{ color: "var(--forest-green)" }} />
+                </Link>
 
                 {entryCreditor !== c.id ? (
                   <button onClick={() => setEntryCreditor(c.id)} className="text-xs font-semibold text-left mt-1" style={{ color: "var(--forest-green)" }}>

@@ -5,6 +5,8 @@ export type ExpenseCategory =
   | "food"
   | "travel"
   | "salary"
+  | "helper_salary"
+  | "stall_rent"
   | "other";
 export type DebtorEntryType = "credit_given" | "payment_received";
 export type CreditorEntryType = "credit_taken" | "payment_made";
@@ -24,6 +26,8 @@ export interface Transaction {
   date: string;
   note: string | null;
   expense_category: ExpenseCategory | null;
+  stall_id: string | null;
+  customer_id: string | null;
   synced: boolean;
   created_at: string;
 }
@@ -47,6 +51,7 @@ export interface DebtorEntry {
   debtor_id: string;
   type: DebtorEntryType;
   amount: number;
+  bank_id: string | null;
   date: string;
   note: string | null;
   synced: boolean;
@@ -65,6 +70,7 @@ export interface CreditorEntry {
   creditor_id: string;
   type: CreditorEntryType;
   amount: number;
+  bank_id: string | null;
   date: string;
   note: string | null;
   synced: boolean;
@@ -123,6 +129,46 @@ export interface Database {
         Insert: Omit<CreditorEntry, "id" | "created_at">;
         Update: Partial<Omit<CreditorEntry, "id" | "created_at">>;
       };
+      stalls: {
+        Row: Stall;
+        Insert: Omit<Stall, "id" | "created_at">;
+        Update: Partial<Omit<Stall, "id" | "created_at">>;
+      };
+      customers: {
+        Row: Customer;
+        Insert: Omit<Customer, "id" | "created_at">;
+        Update: Partial<Omit<Customer, "id" | "created_at">>;
+      };
+      investments: {
+        Row: Investment;
+        Insert: Omit<Investment, "id" | "created_at">;
+        Update: Partial<Omit<Investment, "id" | "created_at">>;
+      };
+      investment_entries: {
+        Row: InvestmentEntry;
+        Insert: Omit<InvestmentEntry, "id" | "created_at">;
+        Update: Partial<Omit<InvestmentEntry, "id" | "created_at">>;
+      };
+      creditor_installment_plans: {
+        Row: CreditorInstallmentPlan;
+        Insert: Omit<CreditorInstallmentPlan, "id" | "created_at">;
+        Update: Partial<Omit<CreditorInstallmentPlan, "id" | "created_at">>;
+      };
+      budget_targets: {
+        Row: BudgetTarget;
+        Insert: Omit<BudgetTarget, "id" | "created_at">;
+        Update: Partial<Omit<BudgetTarget, "id" | "created_at">>;
+      };
+      chat_messages: {
+        Row: ChatMessage;
+        Insert: Omit<ChatMessage, "id" | "created_at">;
+        Update: Partial<Omit<ChatMessage, "id" | "created_at">>;
+      };
+      backup_logs: {
+        Row: BackupLog;
+        Insert: Omit<BackupLog, "id" | "created_at">;
+        Update: Partial<Omit<BackupLog, "id" | "created_at">>;
+      };
     };
   };
 }
@@ -140,4 +186,132 @@ export interface DebtorWithBalance extends Debtor {
 export interface CreditorWithBalance extends Creditor {
   balance: number;
   entries: CreditorEntry[];
+}
+
+// --- Stalls ---
+
+export type StallStatus = "active" | "completed";
+export type StallExpenseCategory = "fuel" | "food" | "travel" | "helper_salary" | "stall_rent" | "other";
+
+export interface Stall {
+  id: string;
+  name: string;
+  place: string;
+  start_date: string;
+  end_date: string | null;
+  stall_rental_fee: number;
+  customer_footfall: number;
+  status: StallStatus;
+  synced: boolean;
+  created_at: string;
+}
+
+export interface StallWithDetails extends Stall {
+  expenses: Transaction[];
+  sales: Transaction[];
+  total_expenses: number;
+  total_sales: number;
+  profit: number;
+}
+
+// --- Customers ---
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string | null;
+  debtor_id: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface CustomerWithHistory extends Customer {
+  transactions: Transaction[];
+  debtor_balance: number;
+  total_purchases: number;
+  visit_count: number;
+}
+
+// --- Investments ---
+
+export type InvestmentType = "fd" | "mutual_fund" | "gold" | "stocks" | "other";
+export type InvestmentEntryType = "invest" | "withdraw";
+
+export interface Investment {
+  id: string;
+  name: string;
+  type: InvestmentType | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface InvestmentEntry {
+  id: string;
+  investment_id: string;
+  type: InvestmentEntryType;
+  amount: number;
+  bank_id: string;
+  date: string;
+  note: string | null;
+  synced: boolean;
+  created_at: string;
+}
+
+export interface InvestmentWithBalance extends Investment {
+  balance: number;
+  entries: InvestmentEntry[];
+}
+
+// --- Creditor Installment Plans ---
+
+export type InstallmentFrequency = "weekly" | "monthly" | "quarterly" | "flexible";
+
+export interface CreditorInstallmentPlan {
+  id: string;
+  creditor_id: string;
+  total_amount: number;
+  installment_amount: number | null;
+  frequency: InstallmentFrequency;
+  start_date: string;
+  num_installments: number | null;
+  note: string | null;
+  created_at: string;
+}
+
+export interface CreditorWithInstallments extends CreditorWithBalance {
+  installment_plan: CreditorInstallmentPlan | null;
+  installments_paid: number;
+  installments_remaining: number;
+  next_due_date: string | null;
+}
+
+// --- Budget Targets ---
+
+export interface BudgetTarget {
+  id: string;
+  month: string;
+  target_profit: number;
+  target_savings: number;
+  target_expenses: number;
+  notes: string | null;
+  created_at: string;
+}
+
+// --- Chat History ---
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  created_at: string;
+}
+
+// --- Backup Logs ---
+
+export interface BackupLog {
+  id: string;
+  type: "auto" | "manual";
+  status: "success" | "failed";
+  snapshot_data: string | null;
+  created_at: string;
 }

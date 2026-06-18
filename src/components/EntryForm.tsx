@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 import { generateId, today } from "@/lib/format";
-import type { Transaction, TransactionBank } from "@/lib/types";
+import type { Transaction, TransactionBank, Stall } from "@/lib/types";
 import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
 import type { Bank, TransactionType, ExpenseCategory } from "@/lib/types";
@@ -11,10 +11,12 @@ import { Check } from "lucide-react";
 
 const EXPENSE_CATEGORIES: { value: ExpenseCategory; label: string }[] = [
   { value: "stall", label: "Stall Fee" },
+  { value: "stall_rent", label: "Stall Rent" },
   { value: "fuel", label: "Fuel" },
   { value: "food", label: "Food" },
   { value: "travel", label: "Travel" },
   { value: "salary", label: "Salary" },
+  { value: "helper_salary", label: "Helper" },
   { value: "other", label: "Other" },
 ];
 
@@ -31,10 +33,12 @@ interface EntryFormProps {
 export default function EntryForm({ type, onSuccess }: EntryFormProps) {
   const { refreshSyncCount } = useAuth();
   const [banks, setBanks] = useState<Bank[]>([]);
+  const [stalls, setStalls] = useState<Stall[]>([]);
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(today());
   const [note, setNote] = useState("");
   const [category, setCategory] = useState<ExpenseCategory>("stall");
+  const [stallId, setStallId] = useState("");
   const [splits, setSplits] = useState<BankSplit[]>([{ bank_id: "", amount: "" }]);
   const [useSplit, setUseSplit] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -44,7 +48,10 @@ export default function EntryForm({ type, onSuccess }: EntryFormProps) {
       setBanks(b);
       if (b.length > 0) setSplits([{ bank_id: b[0].id, amount: "" }]);
     });
-  }, []);
+    if (type === "sale" || type === "expense") {
+      db.stalls.where("status").equals("active").toArray().then(setStalls);
+    }
+  }, [type]);
 
   function addSplit() {
     if (splits.length >= 2) return;
@@ -96,6 +103,8 @@ export default function EntryForm({ type, onSuccess }: EntryFormProps) {
         date,
         note: note.trim() || null,
         expense_category: type === "expense" ? category : null,
+        stall_id: stallId || null,
+        customer_id: null,
         synced: false,
         created_at: new Date().toISOString(),
       };
@@ -126,6 +135,7 @@ export default function EntryForm({ type, onSuccess }: EntryFormProps) {
       setAmount("");
       setNote("");
       setDate(today());
+      setStallId("");
       setSplits([{ bank_id: banks[0]?.id ?? "", amount: "" }]);
       setUseSplit(false);
       onSuccess?.();
@@ -174,6 +184,27 @@ export default function EntryForm({ type, onSuccess }: EntryFormProps) {
               {cat.label}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Stall selection */}
+      {stalls.length > 0 && (type === "sale" || type === "expense") && (
+        <div className="card flex flex-col gap-2">
+          <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+            Link to Stall (optional)
+          </p>
+          <select
+            value={stallId}
+            onChange={(e) => setStallId(e.target.value)}
+            className="bg-[var(--off-white)] rounded-lg px-3 py-2 text-sm outline-none"
+          >
+            <option value="">No stall</option>
+            {stalls.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name} — {s.place}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 

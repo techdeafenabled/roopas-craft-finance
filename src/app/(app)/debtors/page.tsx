@@ -4,8 +4,9 @@ import { db } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 import { formatINR, formatDate, generateId, today } from "@/lib/format";
 import toast from "react-hot-toast";
-import { Users, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { Users, Plus, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
 import type { Debtor, DebtorEntry } from "@/lib/types";
+import { generateBillText, shareBill } from "@/lib/bill-generator";
 
 interface DebtorWithBalance extends Debtor {
   balance: number;
@@ -69,6 +70,7 @@ export default function DebtorsPage() {
       debtor_id: debtorId,
       type: entryType,
       amount: amt,
+      bank_id: null,
       date: entryDate,
       note: entryNote.trim() || null,
       synced: false,
@@ -128,6 +130,24 @@ export default function DebtorsPage() {
               <p className={`font-bold text-sm ${d.balance > 0 ? "text-sale" : d.balance < 0 ? "text-expense" : "text-[var(--text-secondary)]"}`}>
                 {formatINR(d.balance)}
               </p>
+              {d.balance > 0 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const text = generateBillText({
+                      customerName: d.name,
+                      amount: d.balance,
+                      date: new Date().toISOString(),
+                      phone: d.phone,
+                    });
+                    shareBill(text, d.phone);
+                  }}
+                  className="w-7 h-7 rounded-full flex items-center justify-center bg-green-50"
+                  title="Send via WhatsApp"
+                >
+                  <MessageCircle size={14} className="text-green-600" />
+                </button>
+              )}
               {expanded === d.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
