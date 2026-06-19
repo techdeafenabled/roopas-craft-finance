@@ -96,8 +96,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             <div className="w-7 h-7 relative rounded-lg overflow-hidden">
               <Image src="/logo.png" alt="Logo" fill className="object-contain" sizes="28px" />
             </div>
-            <span className="text-sm font-bold" style={{ color: "var(--forest-green)" }}>
-              RCJ Finance
+            <span className="text-lg font-script" style={{ color: "var(--forest-green)" }}>
+              Roopa&apos;s Craft
             </span>
           </div>
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--off-white)]">
@@ -139,11 +139,11 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
         {/* Footer */}
         <div className="px-4 py-3 border-t border-[var(--border)]">
-          <p className="text-[10px] text-[var(--text-secondary)]">
+          <p className="text-sm font-script" style={{ color: "var(--forest-green)" }}>
             Roopa&apos;s Craft Jewellery
           </p>
           <p className="text-[10px] text-[var(--text-secondary)]">
-            v2.0.0
+            Finance Tracker · v2.0
           </p>
         </div>
       </aside>

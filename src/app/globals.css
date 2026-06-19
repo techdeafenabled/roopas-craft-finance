@@ -31,8 +31,17 @@
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
+  font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.font-script {
+  font-family: var(--font-script), cursive;
 }
 
 .safe-bottom {
@@ -54,8 +63,9 @@ body {
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .text-sale { color: var(--success); }

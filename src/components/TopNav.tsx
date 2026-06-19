@@ -56,8 +56,8 @@ export default function TopNav({ onToggleSidebar }: TopNavProps) {
               sizes="32px"
             />
           </div>
-          <span className="hidden sm:block text-sm font-bold text-white leading-tight">
-            Roopa&apos;s Craft Jewellery
+          <span className="hidden sm:block text-lg text-white leading-tight font-script">
+            Roopa&apos;s Craft
           </span>
         </button>
 

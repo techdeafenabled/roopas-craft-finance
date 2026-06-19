@@ -153,10 +153,10 @@ export default function LockScreen() {
             className="flex flex-col items-center gap-1"
             style={{ animation: "logo-float 3s ease-in-out infinite" }}
           >
-            <p className="text-[11px] uppercase tracking-[0.25em] font-semibold" style={{ color: "#306D29", opacity: 0.5 }}>
+            <p className="text-2xl font-script" style={{ color: "#306D29" }}>
               Roopa&apos;s Craft Jewellery
             </p>
-            <p className="text-2xl font-bold tracking-wide" style={{ color: "#0D530E" }}>Finance</p>
+            <p className="text-sm font-medium tracking-widest uppercase" style={{ color: "#0D530E", opacity: 0.6 }}>Finance</p>
           </div>
 
           {/* Loading dots */}
@@ -206,7 +206,7 @@ export default function LockScreen() {
               <Image src="/logo.png" alt="logo" fill className="object-cover" sizes="24px"
                 onError={() => {}} />
             </div>
-            <span className="text-xs font-semibold tracking-wider uppercase" style={{ color: "#306D29" }}>
+            <span className="text-base font-script" style={{ color: "#306D29" }}>
               Roopa&apos;s Craft Jewellery
             </span>
           </div>

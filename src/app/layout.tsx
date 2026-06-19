@@ -1,13 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat } from "next/font/google";
+import { DM_Sans, Playfair_Display, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
-const montserrat = Montserrat({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-body",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+
+const greatVibes = Great_Vibes({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-script",
 });
 
 export const metadata: Metadata = {
@@ -35,11 +46,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={montserrat.variable}>
+    <html lang="en" className={`${dmSans.variable} ${playfair.variable} ${greatVibes.variable}`}>
       <head>
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className="min-h-screen flex flex-col font-[var(--font-montserrat)]">
+      <body className="min-h-screen flex flex-col font-[var(--font-body)]">
         <AuthProvider>
           <ServiceWorkerRegister />
           {children}
