@@ -209,7 +209,7 @@ export default function StallDetailPage() {
       {/* Profit summary */}
       <div
         className="rounded-2xl p-4 text-white"
-        style={{ background: "linear-gradient(135deg, #5A7D60, #6B8F71)" }}
+        style={{ background: "linear-gradient(135deg, #0D530E, #306D29)" }}
       >
         <p className="text-[10px] uppercase tracking-wider opacity-70">
           Stall Profit

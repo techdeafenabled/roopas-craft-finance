@@ -11,11 +11,11 @@ import type { Bank } from "@/lib/types";
 const HIDE_KEY = "rcj_hide_amounts";
 
 const BANK_GRADIENTS = [
-  "linear-gradient(135deg, #5A7D60, #6B8F71)",
-  "linear-gradient(135deg, #A08A5E, #C9A96E)",
-  "linear-gradient(135deg, #5B7F8A, #6B9FAB)",
-  "linear-gradient(135deg, #8A6B7D, #A0889B)",
-  "linear-gradient(135deg, #5A8A7D, #6BAB9B)",
+  "linear-gradient(135deg, #0D530E, #306D29)",
+  "linear-gradient(135deg, #8B7D3A, #B5A84E)",
+  "linear-gradient(135deg, #1B5E5B, #2D8A86)",
+  "linear-gradient(135deg, #5B3D1E, #8A6A3D)",
+  "linear-gradient(135deg, #0D530E, #3D8A35)",
 ];
 
 export default function BanksPage() {
@@ -132,7 +132,7 @@ export default function BanksPage() {
       {/* Total balance summary */}
       <div
         className="rounded-2xl p-5 text-white relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #5A7D60, var(--forest-green) 60%, var(--forest-green-light))" }}
+        style={{ background: "linear-gradient(135deg, #0D530E, #306D29 60%, #3D8A35)" }}
       >
         <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/5" />
         <div className="absolute -bottom-6 -right-2 w-20 h-20 rounded-full bg-white/5" />

@@ -26,7 +26,7 @@ const EXPENSE_LABELS: Record<string, string> = {
   stall: "Stall", fuel: "Fuel", food: "Food", travel: "Travel",
   salary: "Salary", helper_salary: "Helper", stall_rent: "Stall Rent", other: "Other",
 };
-const PIE_COLORS = ["#6B8F71", "#c8a059", "#dc2626", "#d97706", "#16a34a", "#6b7280", "#8b5cf6", "#ec4899"];
+const PIE_COLORS = ["#306D29", "#c8a059", "#dc2626", "#d97706", "#16a34a", "#6b7280", "#8b5cf6", "#ec4899"];
 
 type Tab = "overview" | "stalls" | "banks" | "profit";
 
@@ -507,13 +507,13 @@ function ProfitTab({ txAll, year }: { txAll: Transaction[]; year: number }) {
             <XAxis dataKey="month" tick={{ fontSize: 10 }} />
             <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
             <Tooltip formatter={(v) => formatINR(Number(v))} />
-            <Line type="monotone" dataKey="profit" stroke="#6B8F71" strokeWidth={2.5} dot={{ r: 4, fill: "#6B8F71" }} />
+            <Line type="monotone" dataKey="profit" stroke="#306D29" strokeWidth={2.5} dot={{ r: 4, fill: "#306D29" }} />
             <Line type="monotone" dataKey="sales" stroke="#16a34a" strokeWidth={1.5} strokeDasharray="5 5" dot={false} />
           </LineChart>
         </ResponsiveContainer>
         <div className="flex gap-4 mt-2 justify-center">
           <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
-            <div className="w-3 h-0.5 rounded" style={{ background: "#6B8F71" }} />
+            <div className="w-3 h-0.5 rounded" style={{ background: "#306D29" }} />
             Profit
           </div>
           <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">

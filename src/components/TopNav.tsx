@@ -29,7 +29,7 @@ export default function TopNav({ onToggleSidebar }: TopNavProps) {
     <header
       className="sticky top-0 z-40 border-b"
       style={{
-        background: "linear-gradient(135deg, #5A7D60, #6B8F71)",
+        background: "linear-gradient(135deg, #0D530E, #306D29)",
         borderColor: "rgba(255,255,255,0.1)",
       }}
     >
@@ -56,17 +56,9 @@ export default function TopNav({ onToggleSidebar }: TopNavProps) {
               sizes="32px"
             />
           </div>
-          <div className="hidden sm:block">
-            <p
-              className="text-[10px] uppercase tracking-[0.15em] font-semibold leading-none"
-              style={{ color: "#c8a059" }}
-            >
-              Roopa&apos;s Craft
-            </p>
-            <p className="text-sm font-bold text-white leading-tight">
-              Finance
-            </p>
-          </div>
+          <span className="hidden sm:block text-sm font-bold text-white leading-tight">
+            Roopa&apos;s Craft Jewellery
+          </span>
         </button>
 
         {/* Search bar — desktop */}

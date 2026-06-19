@@ -19,11 +19,11 @@ function LiveClock() {
   const date = now.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
   return (
     <div className="flex flex-col items-center select-none">
-      <p className="text-6xl font-thin text-white tracking-tight leading-none"
-        style={{ fontVariantNumeric: "tabular-nums" }}>
+      <p className="text-6xl font-thin tracking-tight leading-none"
+        style={{ fontVariantNumeric: "tabular-nums", color: "#0D530E" }}>
         {time}
       </p>
-      <p className="text-sm text-white/60 mt-2 font-medium">{date}</p>
+      <p className="text-sm mt-2 font-medium" style={{ color: "#306D29", opacity: 0.6 }}>{date}</p>
     </div>
   );
 }
@@ -90,12 +90,12 @@ export default function LockScreen() {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center gap-8"
-        style={{ background: "linear-gradient(160deg, #4A6B50 0%, #5A7D60 35%, #6B8F71 70%, #89A88E 100%)" }}
+        style={{ background: "#FBF5DD" }}
       >
         {/* Decorative circles */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-white/5" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-black/20" />
+          <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full" style={{ background: "rgba(48,109,41,0.06)" }} />
+          <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full" style={{ background: "rgba(231,225,177,0.5)" }} />
         </div>
 
         {/* 3D spinning logo */}
@@ -112,7 +112,7 @@ export default function LockScreen() {
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                background: "radial-gradient(circle, rgba(200,160,89,0.35) 0%, transparent 70%)",
+                background: "radial-gradient(circle, rgba(48,109,41,0.15) 0%, transparent 70%)",
                 transform: "scale(1.4)",
               }}
             />
@@ -120,10 +120,9 @@ export default function LockScreen() {
             <div
               className="w-full h-full rounded-3xl overflow-hidden relative"
               style={{
-                background: "rgba(255,255,255,0.12)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.25)",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)",
+                background: "rgba(255,255,255,0.7)",
+                border: "1px solid rgba(231,225,177,0.8)",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
               }}
             >
               <Image
@@ -138,7 +137,7 @@ export default function LockScreen() {
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%)",
+                  background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.5) 50%, transparent 60%)",
                   animation: "logo-shine 2.4s ease-in-out infinite",
                   position: "absolute",
                   top: 0,
@@ -154,10 +153,10 @@ export default function LockScreen() {
             className="flex flex-col items-center gap-1"
             style={{ animation: "logo-float 3s ease-in-out infinite" }}
           >
-            <p className="text-white/50 text-[11px] uppercase tracking-[0.25em] font-semibold">
+            <p className="text-[11px] uppercase tracking-[0.25em] font-semibold" style={{ color: "#306D29", opacity: 0.5 }}>
               Roopa&apos;s Craft Jewellery
             </p>
-            <p className="text-white text-2xl font-bold tracking-wide">Finance</p>
+            <p className="text-2xl font-bold tracking-wide" style={{ color: "#0D530E" }}>Finance</p>
           </div>
 
           {/* Loading dots */}
@@ -165,8 +164,9 @@ export default function LockScreen() {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-white/50"
+                className="w-1.5 h-1.5 rounded-full"
                 style={{
+                  background: "rgba(48,109,41,0.3)",
                   animation: `logo-float 1.2s ease-in-out ${i * 0.2}s infinite`,
                 }}
               />
@@ -181,17 +181,17 @@ export default function LockScreen() {
     <div
       className="min-h-screen flex flex-col items-center"
       style={{
-        background: "linear-gradient(160deg, #4A6B50 0%, #5A7D60 35%, #6B8F71 70%, #89A88E 100%)",
+        background: "#FBF5DD",
         paddingTop: "env(safe-area-inset-top, 0px)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       {/* Decorative background circles */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
-        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-white/5" />
-        <div className="absolute top-1/3 -left-24 w-64 h-64 rounded-full bg-white/[0.03]" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-black/20" />
-        <div className="absolute bottom-1/4 -left-12 w-40 h-40 rounded-full bg-white/[0.04]" />
+        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full" style={{ background: "rgba(48,109,41,0.06)" }} />
+        <div className="absolute top-1/3 -left-24 w-64 h-64 rounded-full" style={{ background: "rgba(231,225,177,0.4)" }} />
+        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full" style={{ background: "rgba(48,109,41,0.04)" }} />
+        <div className="absolute bottom-1/4 -left-12 w-40 h-40 rounded-full" style={{ background: "rgba(231,225,177,0.3)" }} />
       </div>
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-sm px-8"
@@ -201,12 +201,12 @@ export default function LockScreen() {
         <div className="flex flex-col items-center gap-6">
           {/* Brand pill */}
           <div className="flex items-center gap-2.5 px-4 py-2 rounded-full"
-            style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.18)" }}>
-            <div className="w-6 h-6 relative rounded-full overflow-hidden bg-white/20 flex items-center justify-center">
+            style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(231,225,177,0.8)" }}>
+            <div className="w-6 h-6 relative rounded-full overflow-hidden flex items-center justify-center" style={{ background: "rgba(48,109,41,0.1)" }}>
               <Image src="/logo.png" alt="logo" fill className="object-cover" sizes="24px"
                 onError={() => {}} />
             </div>
-            <span className="text-white/90 text-xs font-semibold tracking-wider uppercase">
+            <span className="text-xs font-semibold tracking-wider uppercase" style={{ color: "#306D29" }}>
               Roopa&apos;s Craft Jewellery
             </span>
           </div>
@@ -220,12 +220,12 @@ export default function LockScreen() {
           {locked ? (
             <div className="flex flex-col items-center gap-4 text-center">
               <div className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(220,38,38,0.2)", border: "2px solid rgba(220,38,38,0.5)" }}>
-                <Lock size={28} color="#fca5a5" />
+                style={{ background: "rgba(220,38,38,0.1)", border: "2px solid rgba(220,38,38,0.4)" }}>
+                <Lock size={28} color="#dc2626" />
               </div>
               <div>
-                <p className="text-white font-bold text-lg">Account Locked</p>
-                <p className="text-white/50 text-sm mt-1 leading-relaxed">
+                <p className="font-bold text-lg" style={{ color: "#0D530E" }}>Account Locked</p>
+                <p className="text-sm mt-1 leading-relaxed" style={{ color: "#306D29", opacity: 0.6 }}>
                   Too many wrong attempts.<br />
                   Try again in ~{lockRemaining} min{lockRemaining === 1 ? "" : "s"}.
                 </p>
@@ -234,15 +234,14 @@ export default function LockScreen() {
           ) : (
             <div className="flex flex-col items-center gap-8 w-full">
               <div className="flex flex-col items-center gap-1">
-                <p className="text-white/70 text-sm font-medium tracking-wide">Enter PIN</p>
+                <p className="text-sm font-medium tracking-wide" style={{ color: "#306D29", opacity: 0.7 }}>Enter PIN</p>
                 {error && (
-                  <p className="text-red-300 text-xs font-medium">{error}</p>
+                  <p className="text-red-600 text-xs font-medium">{error}</p>
                 )}
               </div>
               <PinKeypad
                 onComplete={handlePin}
                 shake={shake}
-                dark={true}
                 disabled={locked}
               />
             </div>
@@ -251,10 +250,10 @@ export default function LockScreen() {
 
         {/* Bottom: App branding */}
         <div className="flex flex-col items-center gap-1">
-          <p className="text-white/25 text-[10px] uppercase tracking-widest font-medium">
+          <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: "#306D29", opacity: 0.25 }}>
             Finance Tracker
           </p>
-          <p className="text-white/15 text-[10px]">Secured with PIN</p>
+          <p className="text-[10px]" style={{ color: "#306D29", opacity: 0.15 }}>Secured with PIN</p>
         </div>
       </div>
     </div>
